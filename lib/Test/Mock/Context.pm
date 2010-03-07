@@ -1,27 +1,24 @@
 package Test::Mock::Context;
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 # ABSTRACT: The mocking context which oversees the mocking process
 use Moose;
 use MooseX::Method::Signatures;
 use MooseX::Types::Moose qw( ArrayRef Object Str );
-use MooseX::Types::Structured qw( Tuple );
+use MooseX::Types::Structured qw( Map Tuple );
 use Test::Mock::Types qw( Expectation Invocation );
 use namespace::autoclean;
 
+use Carp qw( confess );
 use List::MoreUtils qw( zip );
 use Moose::Meta::Class;
 use Class::MOP::Method;
 use Test::Mock::Expectation;
 use Test::Mock::Invocation;
 
-has 'expecations' => (
+has 'expectations' => (
     is      => 'ro',
-    isa     => ArrayRef[Expectation],
-    traits  => [ 'Array' ],
-    default => sub { [] },
-    handles => {
-        _add_expecatation => 'push'
-    }
+    isa     => Map[Object, ArrayRef[Expectation]],
+    default => sub { {} },
 );
 
 has 'run_log' => (
@@ -32,6 +29,12 @@ has 'run_log' => (
     handles => {
         _add_invocation => 'push'
     }
+);
+
+has 'sat' => (
+    isa     => 'Bool',
+    is      => 'rw',
+    default => 1,
 );
 
 method mock (Str $class)
@@ -56,12 +59,23 @@ method mock (Str $class)
 
 method invoke (Object $receiver, Str $method, @parameters)
 {
-    $self->_add_invocation(
-        Test::Mock::Invocation->new(
-            receiver   => $receiver,
-            method     => $method,
-            parameters => \@parameters
-        ));
+    my @expectations = @{ $self->expectations->{$receiver} || [] };
+
+    my $invocation = Test::Mock::Invocation->new(
+        receiver   => $receiver,
+        method     => $method,
+        parameters => \@parameters
+    );
+
+    $self->_add_invocation($invocation);
+
+    my $expectation = shift @{ $self->expectations->{$receiver} };
+    if (!defined $expectation || !$expectation->is_satisfied_by($invocation)) {
+        $self->sat(0);
+        confess"$method was invoked but not expected";
+    }
+
+    return $expectation->return;
 }
 
 method should_mock (Str $method_name)
@@ -75,27 +89,16 @@ method expect (Object $mock, Str $method_name)
         receiver => $mock,
         method   => $method_name
     );
-    $self->_add_expecatation($expectation);
+    $self->expectations->{$mock} ||= [];
+    push @{ $self->expectations->{$mock} }, $expectation;
 
     return $expectation;
 }
 
 method satisfied
 {
-    my @expect = @{ $self->expecations };
-    my @actual = @{ $self->run_log };
-
-    while (@expect && @actual)
-    {
-        my $expected = shift @expect;
-        my $actual   = shift @actual;
-
-        $expected->is_satisfied_by($actual)
-            or return 0;
-    }
-
-    return 0 if @expect != @actual;
-    return 1;
+    my @remaining_expectations = map { @{$_} } values %{ $self->expectations };
+    return $self->sat && @remaining_expectations == 0;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -110,7 +113,7 @@ Test::Mock::Context - The mocking context which oversees the mocking process
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 METHODS
 

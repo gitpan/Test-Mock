@@ -1,5 +1,5 @@
 package Test::Mock;
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 # ABSTRACT: A mock object testing framework in order to test behaviour and interactions between classes
 
 use strict;
@@ -17,7 +17,7 @@ Test::Mock - A mock object testing framework in order to test behaviour and inte
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 SYNOPSIS
 

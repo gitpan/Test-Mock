@@ -1,5 +1,5 @@
 package Test::Mock::Expectation;
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 # ABSTRACT: Represents an expected invocation of a method
 use Moose;
 use MooseX::Method::Signatures;
@@ -28,10 +28,15 @@ has 'parameters' => (
     predicate => 'has_parameter_expectaions'
 );
 
+has 'return' => (
+    is => 'rw'
+);
+
 method is_satisfied_by (Invocation $invocation)
 {
     return 0 if $self->receiver != $invocation->receiver;
     return 0 if $self->method ne $invocation->method;
+
     if ($self->has_parameter_expectaions) {
         return 0 unless $invocation->has_parameters;
 
@@ -63,7 +68,7 @@ Test::Mock::Expectation - Represents an expected invocation of a method
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 ATTRIBUTES
 
@@ -82,6 +87,10 @@ array reference of how C<@_> should look when the method is
 invoked. In the future, there will be parameter expectation objects
 which can work over multiple paramaters, test out of order (eg, hash
 maps), test patterns, etc.
+
+=head1 return : Any
+
+Data to return when this expectation is called.
 
 =head1 AUTHOR
 

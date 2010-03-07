@@ -1,5 +1,5 @@
 package Tests::Mock;
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 use strict;
 use warnings;
 use base 'Test::Class';
@@ -9,7 +9,7 @@ use aliased 'Test::Mock::Context' => 'MockContext';
 
 {
     package ToMock;
-our $VERSION = '0.01';
+our $VERSION = '0.02';
     use Moose;
 
     sub explode { }
@@ -53,13 +53,24 @@ sub mocks_mock_class : Test(2)
     ok $mock->isa('ToMock');
 }
 
-sub call_with_no_expectation : Test
+sub call_with_no_expectation : Test(2)
 {
     my $test = shift;
     my $context = $test->{context};
     my $mock = $test->{mock};
 
-    $mock->explode;
+    dies_ok { $mock->explode };
+
+    ok !$context->satisfied;
+}
+
+sub expectation_with_no_call : Test
+{
+    my $test = shift;
+    my $context = $test->{context};
+    my $mock = $test->{mock};
+
+    $context->expect($mock, 'explode');
 
     ok !$context->satisfied;
 }
@@ -81,7 +92,7 @@ sub multiple_expecations : Test
     ok $context->satisfied;
 }
 
-sub expectation_order : Test
+sub expectation_order : Test(2)
 {
     my $test = shift;
     my $context = $test->{context};
@@ -91,9 +102,11 @@ sub expectation_order : Test
     $context->expect($mock, 'defuse');
     $context->expect($mock, 'explode');
 
-    $mock->explode;
-    $mock->tick;
-    $mock->defuse;
+    dies_ok {
+        $mock->explode;
+        $mock->tick;
+        $mock->defuse;
+    }, qr/Expected tick, actually got explode/;
 
     ok !$context->satisfied;
 }
@@ -111,7 +124,7 @@ sub verifies_parameters : Test
     ok $context->satisfied;
 }
 
-sub verifies_invalid_parameters : Test
+sub verifies_invalid_parameters : Test(2)
 {
     my $test = shift;
     my $context = $test->{context};
@@ -119,9 +132,23 @@ sub verifies_invalid_parameters : Test
 
     $context->expect($mock, 'tick')->parameters([ 5 ]);
 
-    $mock->tick(10);
+    dies_ok { $mock->tick(10) };
 
     ok !$context->satisfied;
+}
+
+sub can_return_data : Test(2)
+{
+    my $test = shift;
+    my $context = $test->{context};
+    my $mock = $test->{mock};
+
+    $context->expect($mock, 'defuse')->return('red wire');
+
+    my $wire_cut = $mock->defuse();
+
+    ok $context->satisfied;
+    is $wire_cut, 'red wire';
 }
 
 1;

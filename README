@@ -1,0 +1,12 @@
+
+
+This archive contains the distribution Test-Mock, version
+0.01:
+
+  A mock object testing framework in order to test behaviour and interactions between classes
+
+This software is copyright (c) 2010 by Oliver Charles.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+

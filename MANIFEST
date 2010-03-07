@@ -1,0 +1,16 @@
+LICENSE
+MANIFEST
+META.yml
+Makefile.PL
+README
+dist.ini
+lib/Test/Mock.pm
+lib/Test/Mock/Context.pm
+lib/Test/Mock/Expectation.pm
+lib/Test/Mock/Invocation.pm
+lib/Test/Mock/Types.pm
+t/Tests/EG/PublisherSubscriber.pm
+t/Tests/Mock.pm
+t/release-pod-coverage.t
+t/release-pod-syntax.t
+t/run.t

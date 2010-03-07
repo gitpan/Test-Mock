@@ -1,0 +1,23 @@
+---
+abstract: 'A mock object testing framework in order to test behaviour and interactions between classes'
+author:
+  - 'Oliver Charles <oliver.g.charles@googlemail.com>'
+build_requires: {}
+configure_requires:
+  ExtUtils::MakeMaker: 6.11
+generated_by: 'Dist::Zilla version 1.100651'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Test-Mock
+requires:
+  Data::Compare: 0
+  List::MoreUtils: 0
+  Moose: 0
+  MooseX::Method::Signatures: 0
+  MooseX::Types::Moose: 0
+  MooseX::Types::Structured: 0
+  Test::Class::Most: 0
+  namespace::autoclean: 0
+version: 0.01

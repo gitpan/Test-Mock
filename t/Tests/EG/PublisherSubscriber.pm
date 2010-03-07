@@ -1,5 +1,5 @@
 package Tests::EG::PublisherSubscriber;
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 use strict;
 use warnings;
 use base 'Test::Class';
@@ -7,14 +7,14 @@ use Test::Class::Most;
 
 {
     package Subscriber;
-our $VERSION = '0.02';
+our $VERSION = '0.03';
     use Moose;
     sub receive { }
 }
 
 {
     package Publisher;
-our $VERSION = '0.02';
+our $VERSION = '0.03';
     use Moose;
 
     has 'subscribers' => (

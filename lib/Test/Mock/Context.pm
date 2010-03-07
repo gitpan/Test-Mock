@@ -1,5 +1,5 @@
 package Test::Mock::Context;
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 # ABSTRACT: The mocking context which oversees the mocking process
 use Moose;
 use MooseX::Method::Signatures;
@@ -40,9 +40,22 @@ has 'sat' => (
 method mock (Str $class)
 {
     my $package = $class . '::Mock';
+
+    my (@superclasses, @roles, @methods);
+    if (my $meta = Class::MOP::Class->initialize($class)) {
+        if ($meta->isa('Moose::Meta::Role')) {
+            @methods = $class->meta->get_method_list;
+            @roles = $class;
+        }
+        else {
+            @superclasses = ($class);
+            @methods = $class->meta->get_all_method_names;
+        }
+    }
+
     my $mock = Moose::Meta::Class->create(
         $package => (
-            superclasses => [ $class, $class->meta->superclasses ],
+            superclasses => [ @superclasses ],
             methods      => {
                 map {
                     my $method = $_;
@@ -50,8 +63,9 @@ method mock (Str $class)
                         my $mock = shift;
                         $self->invoke($mock, $method, @_);
                     }
-                } grep { $self->should_mock($_) } $class->meta->get_all_method_names
-            }
+                } grep { $self->should_mock($_) } @methods
+            },
+            @roles ? (roles => [ @roles ]) : ()
         ));
 
     return $mock->new_object;
@@ -113,7 +127,7 @@ Test::Mock::Context - The mocking context which oversees the mocking process
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 METHODS
 

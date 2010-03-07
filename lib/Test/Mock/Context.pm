@@ -1,5 +1,5 @@
 package Test::Mock::Context;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 # ABSTRACT: The mocking context which oversees the mocking process
 use Moose;
 use MooseX::Method::Signatures;
@@ -11,6 +11,7 @@ use namespace::autoclean;
 use Carp qw( confess );
 use List::MoreUtils qw( zip );
 use Moose::Meta::Class;
+use Class::MOP;
 use Class::MOP::Method;
 use Test::Mock::Expectation;
 use Test::Mock::Invocation;
@@ -39,6 +40,7 @@ has 'sat' => (
 
 method mock (Str $class)
 {
+    Class::MOP::load_class($class);
     my $package = $class . '::Mock';
 
     my (@superclasses, @roles, @methods);
@@ -127,7 +129,7 @@ Test::Mock::Context - The mocking context which oversees the mocking process
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 METHODS
 

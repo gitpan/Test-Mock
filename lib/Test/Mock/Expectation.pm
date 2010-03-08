@@ -1,11 +1,13 @@
 package Test::Mock::Expectation;
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 # ABSTRACT: Represents an expected invocation of a method
 use Moose;
 use MooseX::Method::Signatures;
 use MooseX::Types::Moose qw( ArrayRef Object Str );
 use Test::Mock::Types qw( Invocation );
 use namespace::autoclean;
+
+use Moose::Meta::Attribute::Custom::Trait::Chained;
 
 use Data::Compare;
 
@@ -24,12 +26,13 @@ has 'method' => (
 has 'parameters' => (
     is        => 'rw',
     isa       => ArrayRef,
-    traits    => [ 'Array' ],
+    traits    => [ 'Array', 'Chained' ],
     predicate => 'has_parameter_expectaions'
 );
 
 has 'return' => (
-    is => 'rw'
+    is     => 'rw',
+    traits => [ 'Chained' ]
 );
 
 method is_satisfied_by (Invocation $invocation)
@@ -68,7 +71,7 @@ Test::Mock::Expectation - Represents an expected invocation of a method
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 ATTRIBUTES
 

@@ -1,5 +1,5 @@
 package Test::Mock::Context;
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 # ABSTRACT: The mocking context which oversees the mocking process
 use Moose;
 use MooseX::Method::Signatures;
@@ -129,7 +129,7 @@ Test::Mock::Context - The mocking context which oversees the mocking process
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 METHODS
 

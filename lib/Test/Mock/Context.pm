@@ -1,5 +1,5 @@
 package Test::Mock::Context;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 # ABSTRACT: The mocking context which oversees the mocking process
 use Moose;
 use MooseX::Method::Signatures;
@@ -70,6 +70,11 @@ method mock (Str $class)
             @roles ? (roles => [ @roles ]) : ()
         ));
 
+    # Make all attributes not-required, and remove delegation (we've already stubbed the methods)
+    for my $attribute ($mock->get_all_attributes) {
+        $mock->add_attribute($attribute->clone(required => 0, handles => {}))
+    }
+
     return $mock->new_object;
 }
 
@@ -129,7 +134,7 @@ Test::Mock::Context - The mocking context which oversees the mocking process
 
 =head1 VERSION
 
-version 0.05
+version 0.06
 
 =head1 METHODS
 

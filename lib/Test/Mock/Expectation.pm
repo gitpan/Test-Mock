@@ -1,5 +1,5 @@
 package Test::Mock::Expectation;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 # ABSTRACT: Represents an expected invocation of a method
 use Moose;
 use MooseX::Method::Signatures;
@@ -71,7 +71,7 @@ Test::Mock::Expectation - Represents an expected invocation of a method
 
 =head1 VERSION
 
-version 0.05
+version 0.06
 
 =head1 ATTRIBUTES
 

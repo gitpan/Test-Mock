@@ -1,5 +1,7 @@
 package Test::Mock::Types;
-our $VERSION = '0.06';
+BEGIN {
+  $Test::Mock::Types::VERSION = '0.07';
+}
 # ABSTRACT: Types used by Test::Mock
 use MooseX::Types -declare => [qw( Expectation Invocation )];
 
@@ -17,7 +19,7 @@ Test::Mock::Types - Types used by Test::Mock
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 AUTHOR
 

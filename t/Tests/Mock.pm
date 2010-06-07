@@ -1,5 +1,4 @@
 package Tests::Mock;
-our $VERSION = '0.06';
 use strict;
 use warnings;
 use base 'Test::Class';
@@ -10,7 +9,6 @@ use aliased 'Test::Mock::Context' => 'MockContext';
 
 {
     package ToMock;
-our $VERSION = '0.06';
     use Moose;
 
     sub explode { }
@@ -20,7 +18,6 @@ our $VERSION = '0.06';
 
 {
     package ToMock::Role;
-our $VERSION = '0.06';
     use Moose::Role;
 
     sub dance { }

@@ -1,5 +1,7 @@
 package Test::Mock::Invocation;
-our $VERSION = '0.06';
+BEGIN {
+  $Test::Mock::Invocation::VERSION = '0.07';
+}
 # ABSTRACT: Represents an actual invocation of a method
 use Moose;
 use MooseX::Method::Signatures;
@@ -36,7 +38,7 @@ Test::Mock::Invocation - Represents an actual invocation of a method
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 ATTRIBUTES
 

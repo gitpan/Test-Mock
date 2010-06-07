@@ -1,5 +1,4 @@
 package Tests::Expectation;
-our $VERSION = '0.06';
 use strict;
 use warnings;
 use base 'Test::Class';
@@ -9,7 +8,6 @@ use Test::Mock::Expectation;
 
 {
     package Receiver;
-our $VERSION = '0.06';
     use Moose;
 }
 
